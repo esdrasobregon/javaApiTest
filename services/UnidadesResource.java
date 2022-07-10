@@ -67,6 +67,7 @@ public class UnidadesResource {
     @Path("unidadJson")
     @Produces("APPLICATION/JSON")
     public String getJsonProductos() {
+        //https://www.javatpoint.com/java-json-example
         ArrayList<JSONObject> listResult = new ArrayList<JSONObject>();
         String result = "{ unidades:";
         crudUnidades crud = new crudUnidades();
