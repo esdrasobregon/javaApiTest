@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/WebServices/GenericResource.java to edit this template
  */
+//https://tomcat.apache.org/tomcat-7.0-doc/config/filter.html
 package services;
 
 import controllers.crudUnidades;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
@@ -88,6 +90,16 @@ public class UnidadesResource {
         return listResult.toString();
     }
 
+    @POST
+    @Path("addProductos")
+    @Produces("APPLICATION/JSON")
+    //@Consumes("APPLICATION/JSON")
+    public String doPost() {
+        ArrayList<JSONObject> listResult = new ArrayList<JSONObject>();
+        JOptionPane.showMessageDialog(null, "hola");
+        return listResult.toString();
+    }
+
     /**
      * PUT method for updating or creating an instance of UnidadesResource
      *
@@ -95,6 +107,8 @@ public class UnidadesResource {
      */
     @PUT
     @Consumes(MediaType.TEXT_HTML)
+    
     public void putHtml(String content) {
+        JOptionPane.showMessageDialog(null, content);
     }
 }
