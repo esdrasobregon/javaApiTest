@@ -50,17 +50,15 @@ public class crudUnidades {
     }
 
     public boolean delete(Unidades un) {
-        boolean us = false;
+        boolean us = true;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = Credentials.getConnector();
-            //here sonoo is database name, root is username and password 
             PreparedStatement ps
                     = con.prepareStatement("delete from unidades where idbus = ?");
             ps.setInt(1, un.getIdbus());
             ps.execute();
             con.close();
-            us = true;
             return us;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
