@@ -85,7 +85,5 @@ public class Unidades {
         this.fecha_ingreso = fecha_ingreso;
     }
     
-    
-    
 }
 
