@@ -7,7 +7,9 @@
 package services;
 
 import controllers.crudUnidades;
+import controllers.crudUsuario;
 import entitys.Unidades;
+import entitys.Usuario;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -21,6 +23,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -103,9 +106,12 @@ public class UnidadesResource {
     @Produces("APPLICATION/JSON")
     @Consumes("APPLICATION/JSON")
     public String addProducto(String prod) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONArray dataObject = (JSONArray) parser.parse(String.valueOf(prod));
+        JOptionPane.showMessageDialog(null, dataObject.get(0).toString());
         ArrayList<JSONObject> listResult = new ArrayList<JSONObject>();
-        Unidades un = getUnidadFromJsonString(prod);
-        JOptionPane.showMessageDialog(null, "fecha: " + un.getFecha_ingreso());
+        Unidades un = getUnidadFromJsonString(dataObject.get(1).toString());
+        //JOptionPane.showMessageDialog(null, "fecha: " + un.getFecha_ingreso());
         crudUnidades crud = new crudUnidades();
         boolean res = crud.add(un);
         if (res) {
@@ -116,6 +122,28 @@ public class UnidadesResource {
         }
 
     }
+
+    @POST
+    @Path("login")
+    @Produces("APPLICATION/JSON")
+    @Consumes("APPLICATION/JSON")
+    public String login(String usser) throws ParseException {
+        JSONArray responseList = new JSONArray();
+        //JOptionPane.showMessageDialog(null, usser.toString());
+        Usuario us = getJsonUser(usser);
+        crudUsuario crud = new crudUsuario();
+
+        Usuario usuarioLogged = crud.login(us.getContrasenya(), us.getNombreUsuario());
+        if (usuarioLogged.getNombreUsuario() != null) {
+            responseList.add(getJsonResponseCode(true));
+            responseList.add(getJsonUsuario(usuarioLogged));
+        } else {
+            responseList.add(getJsonResponseCode(false));
+
+        }
+        return responseList.toString();
+    }
+
     @DELETE
     @Path("deleteProductos")
     @Produces("APPLICATION/JSON")
@@ -136,7 +164,7 @@ public class UnidadesResource {
         } else {
             JOptionPane.showMessageDialog(null, "not deleted");
             return listResult.toString();
-            
+
         }
 
     }
@@ -169,7 +197,38 @@ public class UnidadesResource {
     public void putHtml(String content) {
         JOptionPane.showMessageDialog(null, content);
     }
+
+    private Usuario getJsonUser(String us) {
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(us);
+            Usuario un = new Usuario();
+            un.setNombreUsuario(json.get("usser").toString());
+            un.setContrasenya(json.get("contrasenya").toString());
+            return un;
+        } catch (Exception e) {
+            System.out.println("error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private JSONObject getJsonResponseCode(boolean response) {
+        JSONObject json = new JSONObject();
+        //obj.put("idBus", lista.get(i).getIdbus());
+        json.put("accepted", response);
+        json.put("message", "accepted");
+        return json;
+    }
+
+    private JSONObject getJsonUsuario(Usuario usu) {
+        JSONObject json = new JSONObject();
+        //obj.put("idBus", lista.get(i).getIdbus());
+        json.put("nombreUsuario", usu.getNombreUsuario());
+        json.put("contrasenya", usu.getContrasenya());
+        return json;
+    }
 }
+
 /**
  * var xhr = new XMLHttpRequest(); xhr.open("POST",
  * "http://localhost:8180/ApiTest01/webresources/unidades/addProductos", true);
@@ -178,43 +237,19 @@ public class UnidadesResource {
  * "idBus": 22, "fecha_ingreso": 2022-07-03, "modelo": 2514, "placa": "kkk" }
  * ));
  *
- const response = await fetch("http://localhost:8180/ApiTest01/webresources/unidades/addProductos", {
-method: 'POST',
-headers: {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-},
-body: JSON.stringify(
-    {
-        "marca": "marca02",
-        "tipo": 1,
-        "estado": 1,
-        "idBus": 22,
-        "fecha_ingreso": "03/07/2022",
-        "modelo": 2514,
-        "placa": "xxx"
-    }
-),
-});
-
-response.json().then(data => {
-  console.log(data);
-});
-* 
-* const response = await fetch("http://localhost:8180/ApiTest01/webresources/unidades/deleteProductos", {
-method: 'DELETE',
-headers: {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-},
-body: JSON.stringify(
-    {
-        "idBus": 3
-    }
-),
-});
-
-response.json().then(data => {
-  console.log(data);
-});
+ * const response = await
+ * fetch("http://localhost:8180/ApiTest01/webresources/unidades/addProductos", {
+ * method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type':
+ * 'application/json' }, body: JSON.stringify( { "marca": "marca02", "tipo": 1,
+ * "estado": 1, "idBus": 22, "fecha_ingreso": "03/07/2022", "modelo": 2514,
+ * "placa": "xxx" } ), });
+ *
+ * response.json().then(data => { console.log(data); });
+ *
+ * const response = await
+ * fetch("http://localhost:8180/ApiTest01/webresources/unidades/deleteProductos",
+ * { method: 'DELETE', headers: { 'Accept': 'application/json', 'Content-Type':
+ * 'application/json' }, body: JSON.stringify( { "idBus": 3 } ), });
+ *
+ * response.json().then(data => { console.log(data); });
  */
