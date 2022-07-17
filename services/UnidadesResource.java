@@ -33,7 +33,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author esdra
  */
-@Path("unidades")
+    @Path("unidades")
 public class UnidadesResource {
 
     @Context
